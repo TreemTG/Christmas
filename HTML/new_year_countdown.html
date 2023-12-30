@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./img/new_year.png" type="image/x-icon">
+    <title>New Year Countdown</title>
+    <style>
+        body {
+            background-color: #a600d8;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        #countdown {
+            font-size: 3em;
+            margin: 20px;
+        }
+
+        #message {
+            font-size: 1.5em;
+        }
+
+        #image {
+            max-width: 100%;
+            height: 500px;
+            margin-top: 20px;
+            border: 5px solid rgb(255, 34, 255);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="countdown"></div>
+    <div id="message">Wishing you a Happy New Year, Sara!</div>
+    <img id="image" src="" alt="New Year's Eve Image">
+    
+    <script>
+        // Set the date we're counting down to (New Year's Eve)
+        var countDownDate = new Date("Dec 31, 2023 23:59:59").getTime();
+
+        // Set the list of images
+        var images = [
+            "img/avion_trio.jpg",
+            "img/banca_duo.jpg",
+            "img/BFF.jpg",
+            "img/birds_dead.jpg",
+            "img/butterflies.jpg",
+            "img/cover.jpg",
+            "img/flori.jpg",
+            "img/good_nap.jpg",
+            "img/he_is_old.jpg",
+            "img/I_can_touch_the_sky.jpg",
+            "img/I_want_to_fire_you.jpg",
+            "img/ice_cream_after.jpg",
+            "img/ice_cream_before.jpg",
+            "img/ice_cream.jpg",
+            "img/MAI_duo.jpg",
+            "img/patinoar_trio.jpg",
+            "img/patinoar.jpg",
+            "img/perfect_photo.jpg",
+            "img/plant.jpg",
+            "img/the_tree.jpg",
+            "img/trio_museum.jpg",
+            "img/trio_tree.jpg",
+            "img/weading.jpg"
+            // Add more image URLs here
+        ];
+
+        // Check if local storage has the imagesShown array; if not, create it
+        var imagesShown = JSON.parse(localStorage.getItem("imagesShown")) || [];
+
+        // Update the countdown and display a new image every hour
+        var x = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
+
+            // Calculate days, hours, minutes, and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Display the countdown
+            document.getElementById("countdown").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+
+            // Show a new image every hour
+            if (hours % 1 === 0 && minutes === 50 && seconds === 30) {
+                // Get a random image that hasn't been shown yet
+                var newImage;
+                do {
+                    newImage = images[Math.floor(Math.random() * images.length)];
+                } while (imagesShown.includes(newImage));
+
+                // Show the new image
+                document.getElementById("image").src = newImage;
+
+                // Add the new image to the list of shown images
+                imagesShown.push(newImage);
+
+                // Update local storage
+                localStorage.setItem("imagesShown", JSON.stringify(imagesShown));
+
+                // Notify the user about the new image
+                showNotification("New Year Countdown", "Look in to your memories");
+            }
+
+            // If the countdown is over, show a message
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("countdown").innerHTML = "Happy New Year!";
+            }
+        }, 1000);
+
+        // Function to display notifications
+        function showNotification(title, body) {
+            if (Notification.permission === "granted") {
+                new Notification(title, { body: body });
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(function(permission) {
+                    if (permission === "granted") {
+                        new Notification(title, { body: body });
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
